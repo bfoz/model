@@ -1,6 +1,6 @@
 require 'sketch'
 
-module Model
+class Model
 =begin
     An extrusion is a 2D sketch embiggened into the third dimension.
 =end

@@ -5,6 +5,8 @@ describe Model do
     describe "when the constructor is passed a block" do
 	before do
 	    @model = Model.new do
+		sketch = Sketch.new
+		add_extrusion(Model::Extrusion.new(5, sketch))
 	    end
 	end
 
@@ -43,9 +45,9 @@ describe Model do
 	    @model = Model.new
 	end
 
-	it "should extrude a sketch object" do
+	it "should be able to add an extrusion" do
 	    sketch = Sketch.new
-	    extrusion = @model.add_extrusion(5, sketch)
+	    extrusion = @model.add_extrusion(Model::Extrusion.new(5, sketch))
 	    @model.elements.must_include extrusion
 	end
     end

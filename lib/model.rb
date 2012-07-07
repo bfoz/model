@@ -1,5 +1,6 @@
 require 'sketch'
 
+require_relative 'model/builder'
 require_relative 'model/extrusion'
 
 =begin
@@ -22,15 +23,11 @@ class Model
 
 # @endgroup
 
-    def add_extrusion(length, sketch)
-	extrusion = Extrusion.new(sketch, length)
+    # Add an {Extrusion} object to the {Model}
+    # @param [Extrusion]    extrusion	The {Extrusion} to add
+    # @return [Extrusion]   A new {Extrusion}
+    def add_extrusion(extrusion)
 	@elements.push extrusion
 	extrusion
     end
-
-    private
-end
-
-def self.extrude(sketch, length)
-    Model::Extrusion.new(sketch, length)
 end

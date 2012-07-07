@@ -12,6 +12,7 @@ describe Model do
 
 	it "should create a new Model and use it to evaluate the block" do
 	    @model.must_be_instance_of(Model)
+	    @model.elements.last.must_be_instance_of Model::Extrusion
 	end
     end
 

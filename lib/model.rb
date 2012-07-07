@@ -12,6 +12,7 @@ class Model
 
     def initialize(&block)
 	@elements = Array.new
+	instance_eval &block if block_given?
     end
 
 # @group Accessors

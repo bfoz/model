@@ -37,6 +37,7 @@ describe Model::Builder do
 
 	it "should have an Extrusion element" do
 	    @builder.model.elements.last.must_be_instance_of Model::Extrusion
+	    @builder.model.elements.last.length.must_equal 10
 	end
 
 	it "should make a Rectangle in the Extrusion's Sketch" do

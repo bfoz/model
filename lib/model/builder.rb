@@ -8,6 +8,7 @@ class Model
 
 	def evaluate(&block)
 	    instance_eval &block
+	    @model
 	end
 
 	# Create and add an {Extrusion} object with the given length and {Sketch}

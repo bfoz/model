@@ -30,7 +30,7 @@ describe Model::Builder do
     describe "when adding an Extrusion with a length and a Sketch" do
 	before do
 	    @builder.extrude 10, Sketch.new do
-		add_rectangle 5, 6
+		rectangle 5, 6
 	    end
 	    @builder.model.elements.last.must_be_instance_of Model::Extrusion
 	end
@@ -50,7 +50,7 @@ describe Model::Builder do
     describe "when adding an Extrusion with a length and a block" do
 	before do
 	    @builder.extrude 11 do
-		add_rectangle 5, 6
+		rectangle 5, 6
 	    end
 	end
 

@@ -18,7 +18,11 @@ class Model
 	# @return [Extrusion]   A new {Extrusion}
 	def extrude(length, sketch=nil, &block)
 	    sketch = Sketch.new unless sketch
-	    sketch.instance_eval(&block) if block_given?
+	    sketch = sketch.new unless sketch.is_a? Sketch
+	    if block_given?
+		builder = Sketch::Builder.new(sketch, &block) if block_given?
+		sketch = builder.sketch
+	    end
 	    @model.add_extrusion Extrusion.new(length, sketch)
 	end
     end

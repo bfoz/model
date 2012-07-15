@@ -10,6 +10,7 @@ class Model
 	# @param [Sketch]   sketch  The sketch to extrude
 	# @param [Number]   length  The distance to extrude the sketch
 	def initialize(length, sketch)
+	    raise ArgumentError unless sketch
 	    @length = length
 	    @sketch = sketch
 	end

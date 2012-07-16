@@ -24,6 +24,14 @@ class Model
 
 # @endgroup
 
+    # Adds all of the given elements to the {Model}
+    # @param [Array]    args The elements to add
+    # @return   The last element added
+    def push(*args)
+	@elements.push *args
+	@elements.last
+    end
+
     # Add an {Extrusion} object to the {Model}
     # @param [Extrusion]    extrusion	The {Extrusion} to add
     # @return [Extrusion]   A new {Extrusion}

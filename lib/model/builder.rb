@@ -6,9 +6,18 @@ class Model
 	    @model = model || Model.new
 	end
 
+	# Evalute the given block in the {Model} context
+	# @return [Model]   The built {Model}
 	def evaluate(&block)
 	    instance_eval &block
 	    @model
+	end
+
+	# Adds all of the given elements to the {Model}
+	# @param [Array]    args The elements to add to the {Model}
+	# @return   The last element added to the {Model}
+	def push(*args)
+	    @model.push(*args)
 	end
 
 	# Create and add an {Extrusion} object with the given length and {Sketch}

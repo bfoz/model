@@ -15,6 +15,11 @@ describe Model::Builder do
 	Model::Builder.new(model).model.must_be_same_as(model)
     end
 
+    it "must have a push method that pushes elements" do
+	@builder.push Model::Extrusion.new(5, Sketch.new)
+	@builder.model.elements.last.must_be_kind_of Model::Extrusion
+    end
+
     describe "when evaluating a block" do
 	before do
 	    @builder.evaluate do

@@ -27,17 +27,20 @@ describe Model do
 	end
     end
 
-    describe "properties" do
-	before do
-	    @model = Model.new
-	end
+    describe "properties and methods" do
+	let(:model) { Model.new }
 
 	it "should have an elements accessor" do
-	    @model.must_respond_to :elements
+	    model.must_respond_to :elements
 	end
 
 	it "should have an empty? property" do
-	    @model.must_respond_to :empty?
+	    model.must_respond_to :empty?
+	end
+
+	it "must have a push method that pushes elements" do
+	    model.push Model::Extrusion.new(5, Sketch.new)
+	    model.elements.last.must_be_kind_of Model::Extrusion
 	end
     end
 

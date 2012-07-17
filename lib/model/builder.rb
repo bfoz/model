@@ -21,18 +21,24 @@ class Model
 	end
 
 	# Create and add an {Extrusion} object with the given length and {Sketch}
+	# Optionally accepts the same options as {Geometry::Transformation Transformation}
+	# @overload extrude(length, sketch=nil, options={})
 	# @param [Numeric]	length	The length of the {Extrusion}
 	# @param [Sketch]	sketch	The {Sketch} to extrude
 	# @param [Block]	block	A block to use for creating, or modifying, the {Sketch} to extrude
 	# @return [Extrusion]   A new {Extrusion}
-	def extrude(length, sketch=nil, &block)
-	    sketch = Sketch.new unless sketch
+	def extrude(length, *args, &block)
+	    options, args = args.partition {|a| a.is_a? Hash}
+	    options = options.reduce({}, :merge)
+
+	    sketch = args.shift || Sketch.new
 	    sketch = sketch.new unless sketch.is_a? Sketch
 	    if block_given?
 		builder = Sketch::Builder.new(sketch, &block) if block_given?
 		sketch = builder.sketch
 	    end
-	    @model.add_extrusion Extrusion.new(length, sketch)
+
+	    @model.add_extrusion Extrusion.new(length, sketch, options)
 	end
     end
 end

@@ -73,31 +73,43 @@ describe Model::Builder do
 	end
 
 	describe "with transformation options" do
-	    before do
-		builder.extrude 11, :origin => Point[4,2] do
-		    rectangle 5, 6
+	    describe "when given an origin" do
+		before do
+		    builder.extrude 11, :origin => Point[4,2] do
+			rectangle 5, 6
+		    end
+		end
+		
+		it "should have an Extrusion element" do
+		    builder.model.elements.last.must_be_instance_of Model::Extrusion
+		end
+		
+		it "should make a Rectangle in the Extrusion's Sketch" do
+		    extrusion = builder.model.elements.last
+		    sketch = extrusion.sketch
+		    sketch.elements.last.must_be_kind_of Geometry::Rectangle
+		end
+		
+		it "must have a transformation" do
+		    extrusion = builder.model.elements.last
+		    extrusion.transformation.must_be_instance_of(Geometry::Transformation)
+		    extrusion.transformation.translation.must_equal Point[4,2]
 		end
 	    end
 
-	    it "should have an Extrusion element" do
-		builder.model.elements.last.must_be_instance_of Model::Extrusion
+	    describe "when given a zero origin" do
+		before do
+		    builder.extrude 11, :origin => [0,0,0] do
+			rectangle 5, 6
+		    end
+		end
+
+		it "should have an Extrusion element" do
+		    extrusion = builder.model.elements.last
+		    extrusion.must_be_instance_of Model::Extrusion
+		    extrusion.transformation.translation.must_equal nil
+		end
 	    end
-
-	    it "should make a Rectangle in the Extrusion's Sketch" do
-		extrusion = builder.model.elements.last
-		sketch = extrusion.sketch
-		sketch.elements.last.must_be_kind_of Geometry::Rectangle
-	    end
-
-	    it "must have a transformation" do
-		extrusion = builder.model.elements.last
-		extrusion.transformation.must_be_instance_of(Geometry::Transformation)
-		extrusion.transformation.translation.must_equal Point[4,2]
-	    end
-
-	end
-
 	end
     end
-
 end

@@ -93,7 +93,7 @@ describe Model::Builder do
 		it "must have a transformation" do
 		    extrusion = builder.model.elements.last
 		    extrusion.transformation.must_be_instance_of(Geometry::Transformation)
-		    extrusion.transformation.translation.must_equal Point[4,2]
+		    extrusion.transformation.translation.must_equal Point[4,2,0]
 		end
 	    end
 

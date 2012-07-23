@@ -20,15 +20,10 @@ class Model
 	    @length = length
 	    @sketch = sketch
 
-	    numberOfTranslationParameters = options.count {|k,v| [:move, :origin, :translate].include? k }
-	    if numberOfTranslationParameters > 1
-		raise ArgumentError, "Too many translation parameters in #{options}"
-	    elsif numberOfTranslationParameters != 0
-		options[:translate] ||= options.delete(:move) || options.delete(:origin)
-	    end
-
+	    options[:dimensions] = 3 unless options.key?(:dimensions) && (options[:dimensions] >= 3)
 	    @transformation = transformation || Geometry::Transformation.new(options)
 	    raise ArgumentError, "#{@transformation} must be a Transformation" if @transformation && !@transformation.is_a?(Geometry::Transformation)
+	    raise ArgumentError, "The transformation must have at least 3 dimensions" if @transformation.dimensions < 3
 	end
     end
 end

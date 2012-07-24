@@ -2,6 +2,7 @@ require 'sketch'
 
 require_relative 'model/builder'
 require_relative 'model/extrusion'
+require_relative 'model/group'
 
 =begin
 A Model is a container for 3D Geometry objects

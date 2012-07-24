@@ -79,17 +79,17 @@ describe Model::Builder do
 			rectangle 5, 6
 		    end
 		end
-		
+
 		it "should have an Extrusion element" do
 		    builder.model.elements.last.must_be_instance_of Model::Extrusion
 		end
-		
+
 		it "should make a Rectangle in the Extrusion's Sketch" do
 		    extrusion = builder.model.elements.last
 		    sketch = extrusion.sketch
 		    sketch.elements.last.must_be_kind_of Geometry::Rectangle
 		end
-		
+
 		it "must have a transformation" do
 		    extrusion = builder.model.elements.last
 		    extrusion.transformation.must_be_instance_of(Geometry::Transformation)
@@ -110,6 +110,17 @@ describe Model::Builder do
 		    extrusion.transformation.translation.must_equal nil
 		end
 	    end
+	end
+    end
+
+    describe "when adding a group" do
+	before do
+	    builder.group :origin => [1,2,3]
+	end
+
+	it "must have a group element" do
+	    builder.model.elements.first.must_be_kind_of Model::Group
+	    builder.model.elements.first.translation.must_equal Point[1,2,3]
 	end
     end
 end

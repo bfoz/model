@@ -123,4 +123,16 @@ describe Model::Builder do
 	    builder.model.elements.first.translation.must_equal Point[1,2,3]
 	end
     end
+    
+    describe "when ignorance is bliss" do
+	it "must ignore xextrude" do
+	    builder.xextrude
+	    builder.model.elements.count.must_equal 0
+	end
+
+	it "must ignore xgroup" do
+	    builder.xgroup
+	    builder.model.elements.count.must_equal 0
+	end
+    end
 end

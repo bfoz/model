@@ -44,5 +44,17 @@ class Model
 
 	    @model.add_extrusion Extrusion.new(length, sketch, options)
 	end
+	
+	# !@group Ignorance is Bliss
+
+	# Common catcher for methods that are being ignored
+	def ignore(*args, &block)
+	end
+	
+	# Shortcuts for preventing elements from generating geometry
+	alias :xgroup	:ignore
+	alias :xextrude	:ignore
+	
+	# !@endgroup
     end
 end

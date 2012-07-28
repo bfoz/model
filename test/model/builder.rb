@@ -110,6 +110,28 @@ describe Model::Builder do
 		    extrusion.transformation.translation.must_equal nil
 		end
 	    end
+
+	    describe "when given axes and no origin" do
+		before do
+		    builder.extrude 3, :x => [0,1,0], :y => [0,0,1] do
+			rectangle 1,2
+		    end
+		end
+
+		it "should have an Extrusion element" do
+		    extrusion = builder.model.elements.last
+		    extrusion.must_be_instance_of Model::Extrusion
+		end
+
+		it "must transform the extrusion element" do
+		    extrusion = builder.model.elements.last
+		    transformation = extrusion.transformation
+		    transformation.identity?.wont_equal(true)
+		    extrusion.transformation.translation.must_equal nil
+		    extrusion.transformation.x_axis.must_equal [0,1,0]
+		    extrusion.transformation.y_axis.must_equal [0,0,1]
+		end
+	    end
 	end
     end
 
@@ -123,7 +145,7 @@ describe Model::Builder do
 	    builder.model.elements.first.translation.must_equal Point[1,2,3]
 	end
     end
-    
+
     describe "when ignorance is bliss" do
 	it "must ignore xextrude" do
 	    builder.xextrude

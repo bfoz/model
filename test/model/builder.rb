@@ -2,6 +2,8 @@ require 'minitest/autorun'
 require 'geometry'
 require 'model/builder'
 
+LENGTH = 3
+
 describe Model::Builder do
     Point = Geometry::Point
 
@@ -30,6 +32,24 @@ describe Model::Builder do
 
 	it "should create the commanded elements" do
 	    builder.model.elements.last.must_be_instance_of Model::Extrusion
+	end
+    end
+
+    describe "when evaluating a block within a block" do
+	before do
+	    builder.evaluate do
+		group do
+		    extrude LENGTH, Sketch.new
+		end
+	    end
+	end
+
+	it "should create the commanded elements" do
+	    builder.model.elements.last.must_be_instance_of Model::Group
+	end
+
+	it "must be able to access global constants" do
+	    builder.model.elements.last.elements.last.length.must_equal LENGTH
 	end
     end
 

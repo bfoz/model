@@ -95,7 +95,7 @@ describe Model::Builder do
 	describe "with transformation options" do
 	    describe "when given an origin" do
 		before do
-		    builder.extrude 11, :origin => Point[4,2] do
+		    builder.extrude 11, :origin => Point[4,2,0] do
 			rectangle 5, 6
 		    end
 		end
@@ -119,7 +119,7 @@ describe Model::Builder do
 
 	    describe "when given a zero origin" do
 		before do
-		    builder.extrude 11, :origin => [0,0,0] do
+		    builder.extrude 10, :origin => [0,0,0] do
 			rectangle 5, 6
 		    end
 		end
@@ -127,7 +127,6 @@ describe Model::Builder do
 		it "should have an Extrusion element" do
 		    extrusion = builder.model.elements.last
 		    extrusion.must_be_instance_of Model::Extrusion
-		    extrusion.transformation.translation.must_equal nil
 		end
 	    end
 

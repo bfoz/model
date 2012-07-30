@@ -5,8 +5,7 @@ class Model
     An extrusion is a 2D sketch embiggened into the third dimension.
 =end
     class Extrusion
-	attr_accessor :length, :sketch
-	attr_reader :transformation
+	attr_accessor :length, :sketch, :transformation
 
 	# @param [Number]   length  The distance to extrude the sketch
 	# @param [Sketch]   sketch  The sketch to extrude

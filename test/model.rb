@@ -54,5 +54,13 @@ describe Model do
 	    extrusion = @model.add_extrusion(Model::Extrusion.new(5, sketch))
 	    @model.elements.must_include extrusion
 	end
+
+	it "must push new elements" do
+	    @model.push Model::Extrusion.new(5, Sketch.new), :origin => [1,2,3]
+	    @model.elements.size.must_equal 1
+	    @model.elements.first.must_be_instance_of(Model::Extrusion)
+	    @model.elements.first.transformation.translation.must_equal Vector[1,2,3]
+	end
+
     end
 end

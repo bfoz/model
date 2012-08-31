@@ -10,19 +10,32 @@ class Model
 	# @param [Number]   length  The distance to extrude the sketch
 	# @param [Sketch]   sketch  The sketch to extrude
 	# @param [Transformation]   transformation  A transformation that locates the {Extrusion} in its parent's coordinate system
-	def initialize(length, sketch, *args)
-	    options, args = args.partition {|a| a.is_a? Hash}
-	    options = options.reduce({}, :merge)
-	    transformation = args.shift
+	def initialize(length=nil, sketch=nil, transformation=nil)
+	    if sketch
+		raise ArgumentError, "sketch must be a Sketch" unless sketch.is_a?(Sketch)
+		@sketch = sketch
+	    end
+	    @length = length if length
 
-	    raise ArgumentError, "sketch must be a Sketch" unless sketch && sketch.is_a?(Sketch)
-	    @length = length
-	    @sketch = sketch
+	    self.transformation = transformation || Geometry::Transformation.new(:dimensions => 3)
+	end
 
-	    options[:dimensions] = 3 unless options.key?(:dimensions) && (options[:dimensions] >= 3)
-	    @transformation = transformation || Geometry::Transformation.new(options)
-	    raise ArgumentError, "#{@transformation} must be a Transformation" if @transformation && !@transformation.is_a?(Geometry::Transformation)
-	    raise ArgumentError, "The transformation must have at least 3 dimensions" if @transformation.dimensions < 3
+	# Define an instance parameter
+	# @param [Symbol] name	The name of the parameter
+	# @param [Proc] block	A block that evaluates to the desired value of the parameter
+	def define_parameter name, &block
+	    singleton_class.send :define_method, name do
+		@parameters ||= {}
+		@parameters.fetch(name) { |k| @parameters[k] = instance_eval(&block) }
+	    end
+	end
+
+	def transformation=(transformation)
+	    @transformation = transformation
+	    if @transformation
+		raise ArgumentError, "#{@transformation} must be a Transformation" unless @transformation.is_a?(Geometry::Transformation)
+		raise ArgumentError, "The transformation must have at least 3 dimensions" if @transformation.dimensions && (@transformation.dimensions < 3)
+	    end
 	end
     end
 end

@@ -22,16 +22,36 @@ describe Model::Extrusion do
 
     describe "when constructed" do
 	it "must accept a transformation argument" do
-	    e = Extrusion.new(5, Sketch.new, :transformation => Geometry::Transformation.new)
+	    e = Extrusion.new(5, Sketch.new, Geometry::Transformation.new)
 	    e.must_be_instance_of(Extrusion)
 	    e.transformation.must_be_instance_of(Geometry::Transformation)
 	end
 
 	it "must raise an exception if transformation isn't a Transformation" do
 	    lambda { Extrusion.new 5, 5, Array.new }.must_raise ArgumentError
-	    lambda { Extrusion.new :transformation => Array.new }.must_raise ArgumentError
 	end
-
     end
 
+    describe "properties" do
+	it "must have a transformation setter" do
+	    Extrusion.new.transformation = Geometry::Transformation.new
+	end
+    end
+
+    describe "instance parameters" do
+	let(:extrusionA) { Model::Extrusion.new }
+	let(:extrusionB) { Model::Extrusion.new }
+
+	it "must define an instance parameter" do
+	    extrusionA.define_parameter(:parameterA) { 42 }
+	    extrusionA.parameterA.must_equal 42
+	end
+
+	it "must not bleed parameters between instances" do
+	    extrusionA.define_parameter(:parameterA) { 42 }
+	    extrusionA.parameterA.must_equal 42
+	    extrusionB.define_parameter(:parameterA) { 3 }
+	    extrusionB.parameterA.must_equal 3
+	end
+    end
 end

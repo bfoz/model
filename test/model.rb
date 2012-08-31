@@ -44,6 +44,24 @@ describe Model do
 	end
     end
 
+    describe "parameters" do
+	it "must define custom parameters" do
+	    Model.define_parameter(:a_parameter) { 42 }
+	    Model.new.a_parameter.must_equal 42
+	end
+
+	it "must bequeath custom parameters to subclasses" do
+	    Model.define_parameter(:a_parameter) { 42 }
+	    Class.new(Model).new.must_respond_to(:a_parameter)
+	end
+
+	it "must not allow access to parameters defined on a subclass" do
+	    Model.define_parameter(:a_parameter) { 42 }
+	    Class.new(Model).define_parameter(:b_parameter) { 24 }
+	    Model.new.wont_respond_to :b_parameter
+	end
+    end
+
     describe "geometry" do
 	before do
 	    @model = Model.new

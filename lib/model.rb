@@ -12,6 +12,16 @@ class Model
     attr_reader :elements
     attr_accessor :transformation
 
+    # Define a class parameter
+    # @param [Symbol] name  The name of the parameter
+    # @param [Proc] block   A block that evaluates to the desired value of the parameter
+    def self.define_parameter name, &block
+	define_method name do
+	    @parameters ||= {}
+	    @parameters.fetch(name) { |k| @parameters[k] = instance_eval(&block) }
+	end
+    end
+
     def initialize(&block)
 	@elements = Array.new
 	instance_eval &block if block_given?
@@ -25,6 +35,16 @@ class Model
     end
 
 # @endgroup
+
+    # Define an instance parameter
+    # @param [Symbol] name	The name of the parameter
+    # @param [Proc] block	A block that evaluates to the desired value of the parameter
+    def define_parameter name, &block
+	singleton_class.send :define_method, name do
+	    @parameters ||= {}
+	    @parameters.fetch(name) { |k| @parameters[k] = instance_eval(&block) }
+	end
+    end
 
     # Adds all of the given elements to the {Model}
     #  Optionally accepts all of the options for {Geometry::Transformation}

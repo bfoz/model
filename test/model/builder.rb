@@ -24,14 +24,34 @@ describe Model::Builder do
     end
 
     describe "when evaluating a block" do
-	before do
-	    builder.evaluate do
-		extrude 5, Sketch.new
+	describe "with simple geometry" do
+	    before do
+		builder.evaluate do
+		    extrude 5, Sketch.new
+		end
+	    end
+
+	    it "should create the commanded elements" do
+		builder.model.elements.last.must_be_instance_of Model::Extrusion
 	    end
 	end
 
-	it "should create the commanded elements" do
-	    builder.model.elements.last.must_be_instance_of Model::Extrusion
+	describe "with a parameter" do
+	    before do
+		builder.evaluate do
+		    let(:parameterA) { 42 }
+		    extrude parameterA, Sketch.new
+		end
+	    end
+
+	    it "must define the parameter" do
+		builder.model.parameterA.must_equal 42
+	    end
+
+	    it "must use the parameter" do
+		builder.model.elements.last.must_be_instance_of Model::Extrusion
+		builder.model.elements.last.length.must_equal 42
+	    end
 	end
     end
 

@@ -8,6 +8,7 @@ describe Model::Builder do
     Point = Geometry::Point
 
     let(:builder) { Model::Builder.new }
+    subject { Model::Builder.new }
 
     it "should create a new Model when initialized without a Model" do
 	Model::Builder.new.model.must_be_instance_of(Model)
@@ -27,7 +28,7 @@ describe Model::Builder do
 	describe "with simple geometry" do
 	    before do
 		builder.evaluate do
-		    extrude 5, Sketch.new
+		    extrude length:5, sketch:Sketch.new
 		end
 	    end
 
@@ -40,7 +41,7 @@ describe Model::Builder do
 	    before do
 		builder.evaluate do
 		    let(:parameterA) { 42 }
-		    extrude parameterA, Sketch.new
+		    extrude length: parameterA, sketch: Sketch.new
 		end
 	    end
 
@@ -59,7 +60,7 @@ describe Model::Builder do
 	before do
 	    builder.evaluate do
 		group do
-		    extrude LENGTH, Sketch.new
+		    extrude length:LENGTH, sketch:Sketch.new
 		end
 	    end
 	end
@@ -74,29 +75,58 @@ describe Model::Builder do
     end
 
     describe "when adding an Extrusion" do
-	describe " with a length and a Sketch" do
-	    before do
-		builder.extrude 10, Sketch.new do
-		    rectangle 5, 6
+	describe "without a length parameter" do
+	    it "must raise an exception" do
+		-> { subject.extrude }.must_raise ArgumentError
+	    end
+	end
+
+	describe "with a length and a Sketch" do
+	    describe "when the sketch parameter is an instance of a Sketch" do
+		before do
+		    builder.extrude length:10, sketch:Sketch.new do
+			rectangle 5, 6
+		    end
+		    builder.model.elements.last.must_be_instance_of Model::Extrusion
 		end
-		builder.model.elements.last.must_be_instance_of Model::Extrusion
+
+		it "should have an Extrusion element" do
+		    builder.model.elements.last.must_be_instance_of Model::Extrusion
+		    builder.model.elements.last.length.must_equal 10
+		end
+
+		it "should make a Rectangle in the Extrusion's Sketch" do
+		    extrusion = builder.model.elements.last
+		    sketch = extrusion.sketch
+		    sketch.elements.last.must_be_kind_of Geometry::Rectangle
+		end
 	    end
 
-	    it "should have an Extrusion element" do
-		builder.model.elements.last.must_be_instance_of Model::Extrusion
-		builder.model.elements.last.length.must_equal 10
+	    describe "when the sketch parameter is a class derived from Sketch" do
+		before do
+		    builder.extrude length:10, sketch:Sketch do
+			rectangle 5, 6
+		    end
+		    builder.model.elements.last.must_be_instance_of Model::Extrusion
+		end
+
+		it "should have an Extrusion element" do
+		    builder.model.elements.last.must_be_instance_of Model::Extrusion
+		    builder.model.elements.last.length.must_equal 10
+		end
+
+		it "should make a Rectangle in the Extrusion's Sketch" do
+		    extrusion = builder.model.elements.last
+		    sketch = extrusion.sketch
+		    sketch.elements.last.must_be_kind_of Geometry::Rectangle
+		end
 	    end
 
-	    it "should make a Rectangle in the Extrusion's Sketch" do
-		extrusion = builder.model.elements.last
-		sketch = extrusion.sketch
-		sketch.elements.last.must_be_kind_of Geometry::Rectangle
-	    end
 	end
 
 	describe "with a length and a block" do
 	    before do
-		builder.extrude 11 do
+		builder.extrude length:11 do
 		    rectangle 5, 6
 		end
 	    end
@@ -115,7 +145,7 @@ describe Model::Builder do
 	describe "with transformation options" do
 	    describe "when given an origin" do
 		before do
-		    builder.extrude 11, :origin => Point[4,2,0] do
+		    builder.extrude length:11, :origin => Point[4,2,0] do
 			rectangle 5, 6
 		    end
 		end
@@ -139,7 +169,7 @@ describe Model::Builder do
 
 	    describe "when given a zero origin" do
 		before do
-		    builder.extrude 10, :origin => [0,0,0] do
+		    builder.extrude length:10, :origin => [0,0,0] do
 			rectangle 5, 6
 		    end
 		end
@@ -152,7 +182,7 @@ describe Model::Builder do
 
 	    describe "when given axes and no origin" do
 		before do
-		    builder.extrude 3, :x => [0,1,0], :y => [0,0,1] do
+		    builder.extrude length:3, :x => [0,1,0], :y => [0,0,1] do
 			rectangle 1,2
 		    end
 		end
@@ -167,8 +197,8 @@ describe Model::Builder do
 		    transformation = extrusion.transformation
 		    transformation.identity?.wont_equal(true)
 		    extrusion.transformation.translation.must_equal nil
-		    extrusion.transformation.x_axis.must_equal [0,1,0]
-		    extrusion.transformation.y_axis.must_equal [0,0,1]
+		    extrusion.transformation.rotation.x.must_equal [0,1,0]
+		    extrusion.transformation.rotation.y.must_equal [0,0,1]
 		end
 	    end
 	end

@@ -40,7 +40,7 @@ describe Model::Extrusion::Builder do
 		temp = nil
 		Model::Builder.new.evaluate do
 		    let(:parameterA) { 42 }
-		    extrude 5 do
+		    extrude length:5 do
 			temp = parameterA
 		    end
 		end
@@ -57,7 +57,7 @@ describe Model::Extrusion::Builder do
 		temp = nil
 		Model::Builder.new.evaluate do
 		    let(:parameterA) { 42 }
-		    extrude 5 do
+		    extrude length:5 do
 			let(:parameterA) { 3 }
 			temp = parameterA
 		    end

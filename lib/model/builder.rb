@@ -45,18 +45,19 @@ class Model
 
 	# Create and add an {Extrusion} object with the given length and {Sketch}
 	# Optionally accepts the same options as {Geometry::Transformation Transformation}
-	# @overload extrude(length, sketch=nil, options={})
 	# @param [Numeric]  length	The length of the {Extrusion}
 	# @param [Sketch]   sketch	The {Sketch} to extrude
-	# @param [Block]    block	A block to use for creating, or modifying, the {Sketch} to extrude
+	# @param [Proc]	    block	A block to use for creating, or modifying, the {Sketch} to extrude
 	# @param [Hash]	    options	Any of the options accepted by {Geometry::Transformation}
 	# @return [Extrusion]   A new {Extrusion}
-	def extrude(length, *args, &block)
-	    options, args = args.partition {|a| a.is_a? Hash}
-	    options = options.reduce({}, :merge)
+	def extrude(options={}, &block)
+	    raise ArgumentError, "Arguments must be named" unless options.is_a?(Hash)
+	    raise ArgumentError, "Can't extrude without a length" unless options[:length]
 
-	    sketch = args.shift || Sketch.new
+	    length = options.delete(:length)
+	    sketch = options.delete(:sketch) { Sketch.new }
 	    sketch = sketch.new unless sketch.is_a? Sketch
+
 	    extrusion = Extrusion.new(length, sketch, Geometry::Transformation.new(options))
 	    if block_given?
 		@model.push Model::Extrusion::Builder.new(extrusion, self).evaluate(&block)

@@ -54,10 +54,43 @@ describe Model::Builder do
 		builder.model.elements.last.length.must_equal 42
 	    end
 	end
+
+	describe "with a group" do
+	    describe "with a group" do
+		before do
+		    subject.evaluate do
+			group do
+			    group origin: [1,2,3] do
+				extrude length:LENGTH, sketch:Sketch.new, origin: [3,4,5]
+			    end
+			end
+		    end
+		end
+
+		it "should have only one element at the top level" do
+		    subject.model.elements.count.must_equal 1
+		end
+
+		it "should create the commanded elements" do
+		    outer_group = subject.model.elements.last
+		    outer_group.must_be_instance_of Model::Group
+
+		    inner_group = outer_group.elements.last
+		    inner_group.must_be_instance_of Model::Group
+		    inner_group.translation.must_equal Point[1,2,3]
+
+		    extrusion = inner_group.elements.last
+		    extrusion.must_be_instance_of Model::Extrusion
+		    extrusion.length.must_equal LENGTH
+		    extrusion.transformation.translation.must_equal Point[3,4,5]
+		end
+	    end
+	end
     end
 
     describe "when evaluating a block within a block" do
 	before do
+	    skip
 	    builder.evaluate do
 		group do
 		    extrude length:LENGTH, sketch:Sketch.new
@@ -205,13 +238,31 @@ describe Model::Builder do
     end
 
     describe "when adding a group" do
-	before do
-	    builder.group :origin => [1,2,3]
+	describe "without a block" do
+	    before do
+		builder.group :origin => [1,2,3]
+	    end
+
+	    it "must have a group element" do
+		builder.model.elements.first.must_be_kind_of Model::Group
+		builder.model.elements.first.translation.must_equal Point[1,2,3]
+	    end
 	end
 
-	it "must have a group element" do
-	    builder.model.elements.first.must_be_kind_of Model::Group
-	    builder.model.elements.first.translation.must_equal Point[1,2,3]
+	describe "with a block" do
+	    before do
+		subject.group :origin => [1,2,3] do
+		    extrude length:LENGTH, sketch:Sketch.new
+		end
+	    end
+
+	    it "must have a group element" do
+		subject.model.elements.first.must_be_kind_of Model::Group
+	    end
+
+	    it "must have the correct property values" do
+		subject.model.elements.first.translation.must_equal Point[1,2,3]
+	    end
 	end
     end
 

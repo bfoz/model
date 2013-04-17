@@ -10,14 +10,14 @@ class Model
 	# @param [Number]   length  The distance to extrude the sketch
 	# @param [Sketch]   sketch  The sketch to extrude
 	# @param [Transformation]   transformation  A transformation that locates the {Extrusion} in its parent's coordinate system
-	def initialize(length=nil, sketch=nil, transformation=nil)
-	    if sketch
-		raise ArgumentError, "sketch must be a Sketch" unless sketch.is_a?(Sketch)
-		@sketch = sketch
+	def initialize(options={})
+	    if options[:sketch]
+		@sketch = options[:sketch]
+		raise ArgumentError, "sketch must be a Sketch" unless @sketch.is_a?(Sketch)
 	    end
-	    @length = length if length
+	    @length = options[:length]
 
-	    self.transformation = transformation || Geometry::Transformation.new(:dimensions => 3)
+	    self.transformation = options[:transformation] || Geometry::Transformation.new(:dimensions => 3)
 	end
 
 	# Define an instance parameter

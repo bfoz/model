@@ -6,7 +6,7 @@ describe Model do
 	before do
 	    @model = Model.new do
 		sketch = Sketch.new
-		add_extrusion(Model::Extrusion.new(5, sketch))
+		add_extrusion(Model::Extrusion.new(length:5, sketch:sketch))
 	    end
 	end
 
@@ -39,7 +39,7 @@ describe Model do
 	end
 
 	it "must have a push method that pushes elements" do
-	    model.push Model::Extrusion.new(5, Sketch.new)
+	    model.push Model::Extrusion.new(length:5, sketch:Sketch.new)
 	    model.elements.last.must_be_kind_of Model::Extrusion
 	end
     end
@@ -69,12 +69,12 @@ describe Model do
 
 	it "should be able to add an extrusion" do
 	    sketch = Sketch.new
-	    extrusion = @model.add_extrusion(Model::Extrusion.new(5, sketch))
+	    extrusion = @model.add_extrusion(Model::Extrusion.new(length:5, sketch:sketch))
 	    @model.elements.must_include extrusion
 	end
 
 	it "must push new elements" do
-	    @model.push Model::Extrusion.new(5, Sketch.new), :origin => [1,2,3]
+	    @model.push Model::Extrusion.new(length:5, sketch:Sketch.new), :origin => [1,2,3]
 	    @model.elements.size.must_equal 1
 	    @model.elements.first.must_be_instance_of(Model::Extrusion)
 	    @model.elements.first.transformation.translation.must_equal Vector[1,2,3]

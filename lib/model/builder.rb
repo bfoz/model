@@ -58,7 +58,7 @@ class Model
 	    sketch = options.delete(:sketch) { Sketch.new }
 	    sketch = sketch.new unless sketch.is_a? Sketch
 
-	    extrusion = Extrusion.new(length, sketch, Geometry::Transformation.new(options))
+	    extrusion = Extrusion.new(length: length, sketch:sketch, transformation:Geometry::Transformation.new(options))
 	    if block_given?
 		@model.push Model::Extrusion::Builder.new(extrusion, self).evaluate(&block)
 	    else

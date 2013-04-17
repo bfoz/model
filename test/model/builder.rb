@@ -20,7 +20,7 @@ describe Model::Builder do
     end
 
     it "must have a push method that pushes elements" do
-	builder.push Model::Extrusion.new(5, Sketch.new)
+	builder.push Model::Extrusion.new(length:5, sketch:Sketch.new)
 	builder.model.elements.last.must_be_kind_of Model::Extrusion
     end
 

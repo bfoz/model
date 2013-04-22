@@ -17,7 +17,7 @@ class Model
 	    end
 	    @length = options[:length]
 
-	    self.transformation = options[:transformation] || Geometry::Transformation.new(:dimensions => 3)
+	    self.transformation = options[:transformation] || Geometry::Transformation.new(options, dimensions: 3)
 	end
 
 	# Define an instance parameter

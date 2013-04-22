@@ -22,8 +22,15 @@ class Model
 	end
     end
 
-    def initialize(&block)
+    def initialize(*args, &block)
+	options, args = args.partition {|a| a.is_a? Hash}
+	options = options.reduce({}, :merge)
+
 	@elements = Array.new
+
+	self.transformation = options.delete(:transformation)
+	options.each { |k,v| send("#{k}=", v) }
+
 	instance_eval &block if block_given?
     end
 
@@ -48,20 +55,19 @@ class Model
 
     # Adds all of the given elements to the {Model}
     #  Optionally accepts all of the options for {Geometry::Transformation}
-    # @param [Array]    args The elements to add
+    # @param [Model] element	The element to add to the {Model}
+    # @param [Array] args	All remaining arguments are passed the element
     # @return   The last element added
-    def push(*args)
-	options, args = args.partition {|a| a.is_a? Hash}
-	options = options.reduce({}, :merge)
-
-	if options and (options.size != 0)
-	    args.each do |a|
-		a.transformation = Geometry::Transformation.new options
-		@elements.push a
-	    end
-	    @elements.last
+    def push(element, *args)
+	if element.is_a? Class
+	    @elements.push(element.new(*args)).last
 	else
-	    @elements.push(*args).last
+	    options, args = args.partition {|a| a.is_a? Hash}
+	    options = options.reduce({}, :merge)
+	    if options and (options.size != 0)
+		element.transformation = Geometry::Transformation.new options
+	    end
+	    @elements.push(element).last
 	end
     end
 

@@ -2,6 +2,8 @@ require 'minitest/autorun'
 require 'model'
 
 describe Model do
+    subject { Model.new }
+
     describe "when the constructor is passed a block" do
 	before do
 	    @model = Model.new do
@@ -73,12 +75,24 @@ describe Model do
 	    @model.elements.must_include extrusion
 	end
 
-	it "must push new elements" do
-	    @model.push Model::Extrusion.new(length:5, sketch:Sketch.new), :origin => [1,2,3]
-	    @model.elements.size.must_equal 1
-	    @model.elements.first.must_be_instance_of(Model::Extrusion)
-	    @model.elements.first.transformation.translation.must_equal Vector[1,2,3]
+	it "must push a new instance of a class" do
+	    subject.push Model::Extrusion, length:5, sketch:Sketch.new, :origin => [1,2,3]
+	    subject.elements.size.must_equal 1
+	    subject.elements.first.must_be_instance_of(Model::Extrusion)
+	    subject.elements.first.transformation.translation.must_equal Vector[1,2,3]
 	end
 
+	it "must push a Model instance with parameters" do
+	    subject.push Model::Extrusion.new(length:5, sketch:Sketch.new), :origin => [1,2,3]
+	    subject.elements.size.must_equal 1
+	    subject.elements.first.must_be_instance_of(Model::Extrusion)
+	    subject.elements.first.transformation.translation.must_equal Vector[1,2,3]
+	end
+
+	it "must push a Model instance without parameters" do
+	    subject.push Model::Extrusion.new(length:5, sketch:Sketch.new)
+	    subject.elements.size.must_equal 1
+	    subject.elements.first.must_be_instance_of(Model::Extrusion)
+	end
     end
 end

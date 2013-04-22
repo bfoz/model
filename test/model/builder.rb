@@ -118,7 +118,7 @@ describe Model::Builder do
 	    describe "when the sketch parameter is an instance of a Sketch" do
 		before do
 		    builder.extrude length:10, sketch:Sketch.new do
-			rectangle 5, 6
+			rectangle size:[5, 6]
 		    end
 		    builder.model.elements.last.must_be_instance_of Model::Extrusion
 		end
@@ -138,7 +138,7 @@ describe Model::Builder do
 	    describe "when the sketch parameter is a class derived from Sketch" do
 		before do
 		    builder.extrude length:10, sketch:Sketch do
-			rectangle 5, 6
+			rectangle size:[5, 6]
 		    end
 		    builder.model.elements.last.must_be_instance_of Model::Extrusion
 		end
@@ -160,7 +160,7 @@ describe Model::Builder do
 	describe "with a length and a block" do
 	    before do
 		builder.extrude length:11 do
-		    rectangle 5, 6
+		    rectangle size:[5, 6]
 		end
 	    end
 
@@ -179,7 +179,7 @@ describe Model::Builder do
 	    describe "when given an origin" do
 		before do
 		    builder.extrude length:11, :origin => Point[4,2,0] do
-			rectangle 5, 6
+			rectangle size:[5, 6]
 		    end
 		end
 
@@ -203,7 +203,7 @@ describe Model::Builder do
 	    describe "when given a zero origin" do
 		before do
 		    builder.extrude length:10, :origin => [0,0,0] do
-			rectangle 5, 6
+			rectangle size:[5, 6]
 		    end
 		end
 
@@ -216,7 +216,7 @@ describe Model::Builder do
 	    describe "when given axes and no origin" do
 		before do
 		    builder.extrude length:3, :x => [0,1,0], :y => [0,0,1] do
-			rectangle 1,2
+			rectangle size:[1,2]
 		    end
 		end
 

@@ -266,6 +266,65 @@ describe Model::Builder do
 	end
     end
 
+    describe "when adding a translation group" do
+	describe "without a block" do
+	    before do
+		subject.translate [1,2,3]
+	    end
+
+	    it "must have a group element" do
+		subject.elements.first.must_be_kind_of Model::Group
+	    end
+
+	    it "must set the group origin" do
+		subject.elements.first.translation.must_equal Point[1,2,3]
+	    end
+	end
+
+	describe "with a block" do
+	    before do
+		subject.translate [1,2,3] { extrude length:LENGTH, sketch:Sketch.new }
+	    end
+
+	    it "must have a group element" do
+		subject.elements.first.must_be_kind_of Model::Group
+	    end
+
+	    it "must set the group origin" do
+		subject.elements.first.translation.must_equal Point[1,2,3]
+	    end
+	end
+
+	describe "with a nested translation group" do
+	    before do
+		subject.translate [1,2,3] do
+		    translate [4,5,6] { extrude length:LENGTH, sketch:Sketch.new }
+		end
+	    end
+
+	    it "must have a group element" do
+		subject.first.must_be_kind_of Model::Group
+	    end
+
+	    it "must set the group origin" do
+		subject.first.translation.must_equal Point[1,2,3]
+	    end
+
+	    describe "subgroup" do
+		let(:subgroup) { subject.first.first }
+
+		it "must have a sub-group element" do
+		    subgroup.must_be_kind_of Model::Group
+		end
+
+		it "must set the group origin" do
+		    subgroup.translation.must_equal Point[4,5,6]
+		end
+	    end
+	end
+
+    end
+
     describe "when ignorance is bliss" do
 	it "must ignore xextrude" do
 	    builder.xextrude

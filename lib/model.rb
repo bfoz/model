@@ -41,6 +41,12 @@ class Model
 	@elements.empty?
     end
 
+    # !@attribute [r] first
+    #   @return [Element] The first element
+    def first
+	elements.first
+    end
+
 # @endgroup
 
     # Define an instance parameter

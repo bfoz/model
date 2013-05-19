@@ -1,8 +1,11 @@
+require_relative 'dsl'
 require_relative 'extrusion/builder'
 
 class Model
     class Builder
 	attr_reader :model
+
+	include Model::DSL
 
 	def initialize(model=nil)
 	    @model = model || Model.new
@@ -29,6 +32,18 @@ class Model
 	    else
 		super if defined?(super)
 	    end
+	end
+
+	# !@attribute [r] elements
+	#   @return [Array] The current list of elements
+	def elements
+	    @model.elements
+	end
+
+	# !@attribute [r] first
+	#   @return [Element] The first element
+	def first
+	    elements.first
 	end
 
 	# Adds all of the given elements to the {Model}

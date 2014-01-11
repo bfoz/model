@@ -68,6 +68,7 @@ class Model
 	def extrude(options={}, &block)
 	    raise ArgumentError, "Arguments must be named" unless options.is_a?(Hash)
 	    raise ArgumentError, "Can't extrude without a length" unless options[:length]
+	    raise ArgumentError, "Can't extrude without a block or a sketch" unless block_given? or options[:sketch]
 
 	    length = options.delete(:length)
 	    sketch = options.delete(:sketch) { Sketch.new }

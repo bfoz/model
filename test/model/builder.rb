@@ -114,6 +114,12 @@ describe Model::Builder do
 	    end
 	end
 
+	describe 'without a block or a sketch' do
+	    it 'must raise an exception' do
+		-> { subject.extrude length:10 }.must_raise ArgumentError
+	    end
+	end
+
 	describe "with a length and a Sketch" do
 	    describe "when the sketch parameter is an instance of a Sketch" do
 		before do

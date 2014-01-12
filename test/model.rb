@@ -8,7 +8,7 @@ describe Model do
 	before do
 	    @model = Model.new do
 		sketch = Sketch.new
-		add_extrusion(Model::Extrusion.new(length:5, sketch:sketch))
+		push Model::Extrusion.new(length:5, sketch:sketch)
 	    end
 	end
 
@@ -71,7 +71,7 @@ describe Model do
 
 	it "should be able to add an extrusion" do
 	    sketch = Sketch.new
-	    extrusion = @model.add_extrusion(Model::Extrusion.new(length:5, sketch:sketch))
+	    extrusion = @model.push(Model::Extrusion.new(length:5, sketch:sketch))
 	    @model.elements.must_include extrusion
 	end
 

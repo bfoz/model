@@ -76,11 +76,4 @@ class Model
 	    @elements.push(element).last
 	end
     end
-
-    # Add an {Extrusion} object to the {Model}
-    # @param [Extrusion]    extrusion	The {Extrusion} to add
-    # @return [Extrusion]   A new {Extrusion}
-    def add_extrusion(extrusion)
-	push extrusion
-    end
 end

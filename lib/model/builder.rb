@@ -55,7 +55,7 @@ class Model
 
 	# Create a {Group} with an optional name and transformation
 	def group(*args, &block)
-	    @model.push Model::Builder.new(Group.new(*args)).evaluate(&block)
+	    push Model::Builder.new(Group.new(*args)).evaluate(&block)
 	end
 
 	# Create and add an {Extrusion} object with the given length and {Sketch}
@@ -76,9 +76,9 @@ class Model
 
 	    extrusion = Extrusion.new(length: length, sketch:sketch, transformation:Geometry::Transformation.new(options))
 	    if block_given?
-		@model.push Model::Extrusion::Builder.new(extrusion, self).evaluate(&block)
+		push Model::Extrusion::Builder.new(extrusion, self).evaluate(&block)
 	    else
-		@model.push extrusion
+		push extrusion
 	    end
 	end
 

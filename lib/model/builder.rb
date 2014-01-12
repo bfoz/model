@@ -8,6 +8,9 @@ class Model
 	include Model::DSL
 
 	def initialize(model=nil)
+	    @attribute_defaults = {}
+	    @attribute_getters = {}
+	    @attribute_setters = {}
 	    @model = model || Model.new
 	end
 
@@ -16,6 +19,27 @@ class Model
 	def evaluate(&block)
 	    instance_eval &block if block_given?
 	    @model
+	end
+
+	def define_attribute_reader(name, value=nil, &block)
+	    klass = @model.respond_to?(:define_method, true) ? @model : @model.class
+	    if value || block_given?
+		@attribute_defaults[name] = value || block
+		@model.instance_variable_set('@' + name.to_s, value || instance_eval(&block))
+	    end
+	    klass.send :define_method, name do
+		instance_variable_get('@' + name.to_s)
+	    end
+	    @attribute_getters[name] = klass.instance_method(name)
+	end
+
+	def define_attribute_writer(name)
+	    klass = @model.respond_to?(:define_method, true) ? @model : @model.class
+	    method_name = name.to_s + '='
+	    klass.send :define_method, method_name do |value|
+		instance_variable_set '@' + name.to_s, value
+	    end
+	    @attribute_setters[method_name] = klass.instance_method(method_name)
 	end
 
 	# Define a named parameter

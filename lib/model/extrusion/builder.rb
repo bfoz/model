@@ -21,6 +21,12 @@ class Model
 		@extrusion
 	    end
 
+	    # Set the length attribute of the {Extrusion}
+	    # @param length [Number]	the new length
+	    def length(length)
+		@extrusion.length = length
+	    end
+
 	    # Define a named parameter
 	    # @param [Symbol] name	The name of the parameter
 	    # @param [Proc] block	A block that evaluates to the value of the parameter

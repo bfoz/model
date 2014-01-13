@@ -5,7 +5,7 @@ I need to think of something to type here.
 License
 -------
 
-Copyright 2012-2013 Brandon Fosdick <bfoz@bfoz.net> and released under the BSD license.
+Copyright 2012-2014 Brandon Fosdick <bfoz@bfoz.net> and released under the BSD license.
 
 Examples
 --------

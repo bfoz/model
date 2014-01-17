@@ -21,6 +21,9 @@ class Model
 	    @model
 	end
 
+	# Define an attribute with the given name and optional default value (or block)
+	# @param name [String]	The attribute's name
+	# @param value An optional default value
 	def define_attribute_reader(name, value=nil, &block)
 	    klass = @model.respond_to?(:define_method, true) ? @model : @model.class
 	    if value || block_given?

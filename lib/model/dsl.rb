@@ -1,5 +1,5 @@
 class Model
-    # Syntactic sugar for building a {Model} object
+    # Syntactic sugar for building {Model} geometry
     module DSL
 	# Define a new read-write {Model} attribute. An optional default value can be supplied as either an argument, or as a block. The block will be evaluated the first time the attribute is accessed.
 	# @param name [String,Symbol]	The new attribute's name
@@ -14,7 +14,7 @@ class Model
 	# @param name [String,Symbol]	The new attribute's name
 	# @param value A default value for the new attribute
 	def attr_reader(name, value=nil, &block)
-	    define_attribute_reader(name, &block)
+	    define_attribute_reader(name, value, &block)
 	end
 
 	# Define a new write-only {Model} attribute

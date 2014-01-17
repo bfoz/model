@@ -60,6 +60,19 @@ describe Model::Builder do
 	end
     end
 
+    describe 'when defining a read only attribute with a default value' do
+	let(:model) { builder.evaluate { attr_reader :attribute0, 42 } }
+
+	it 'must have the default value' do
+	    model.attribute0.must_equal 42
+	end
+
+	it 'must not have the default value after setting to nil' do
+	    model.attribute0 = nil
+	    model.attribute0.wont_equal 42
+	end
+    end
+
     describe "when evaluating a block" do
 	describe "with simple geometry" do
 	    before do

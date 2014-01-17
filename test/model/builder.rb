@@ -61,7 +61,7 @@ describe Model::Builder do
     end
 
     describe 'when defining a read only attribute with a default value' do
-	let(:model) { builder.evaluate { attr_reader :attribute0, 42 } }
+	let(:model) { builder.evaluate { attr_reader attribute0:42 } }
 
 	it 'must have the default value' do
 	    model.attribute0.must_equal 42

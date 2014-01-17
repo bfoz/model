@@ -26,6 +26,7 @@ class Model
 	# @param value An optional default value
 	def define_attribute_reader(name, value=nil, &block)
 	    klass = @model.respond_to?(:define_method, true) ? @model : @model.class
+	    name, value = name.flatten if name.is_a?(Hash)
 	    if value || block_given?
 		@attribute_defaults[name] = value || block
 		@model.instance_variable_set('@' + name.to_s, value || instance_eval(&block))

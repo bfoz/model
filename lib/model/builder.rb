@@ -68,12 +68,6 @@ class Model
 	    @model.elements
 	end
 
-	# !@attribute [r] first
-	#   @return [Element] The first element
-	def first
-	    elements.first
-	end
-
 	# Adds all of the given elements to the {Model}
 	# @param [Array]    args The elements to add to the {Model}
 	# @return   The last element added to the {Model}

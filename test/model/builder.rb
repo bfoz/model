@@ -84,6 +84,14 @@ describe Model::Builder do
 	    it "should create the commanded elements" do
 		builder.model.elements.last.must_be_instance_of Model::Extrusion
 	    end
+
+	    it 'must have an accessor for the first element' do
+		builder.first.must_be_instance_of Model::Extrusion
+	    end
+
+	    it 'must have an accessor for the last element' do
+		builder.last.must_be_instance_of Model::Extrusion
+	    end
 	end
 
 	describe "with a parameter" do

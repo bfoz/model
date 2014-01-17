@@ -1,5 +1,6 @@
 class Model
     # Syntactic sugar for building {Model} geometry
+    # The including Class or Module is required to implement suitable push and elements methods.
     module DSL
 	# Define a new read-write {Model} attribute. An optional default value can be supplied as either an argument, or as a block. The block will be evaluated the first time the attribute is accessed.
 	# @param name [String,Symbol]	The new attribute's name
@@ -21,6 +22,16 @@ class Model
 	# @param name [String,Symbol]	The new attribute's name
 	def attr_writer(name)
 	    define_attribute_writer(name)
+	end
+
+	# @return [Element] The first element
+	def first
+	    elements.first
+	end
+
+	# @return [Element] The most recently pushed element
+	def last
+	    elements.last
 	end
 
 	# @overload translate(origin, block)

@@ -13,12 +13,36 @@ class Model
 	    end
 
 	    # Evaluate a block in the context of an {Extrusion} and a {Skecth}
+	    #  Use the trick found here http://www.dan-manges.com/blog/ruby-dsls-instance-eval-with-delegation
+	    #  to allow the DSL block to call methods in the enclosing *lexical* scope
 	    # @return {Extrusion}
 	    def evaluate(&block)
-		@sketch_builder = Sketch::Builder.new
-		instance_eval &block if block_given?
-		@extrusion.sketch = @sketch_builder.sketch
+		if block_given?
+		    @sketch_builder = Sketch::Builder.new
+		    @self_before_instance_eval = eval "self", block.binding
+		    self.instance_eval &block
+		    @extrusion.sketch = @sketch_builder.sketch
+		end
 		@extrusion
+	    end
+
+
+	    # Forward all missing method calls to the extrusion and fall through
+	    #   to the {Sketch} builder. If that fails, try the parent.
+	    def method_missing(method, *args, &block)
+		@extrusion.send method, *args, &block
+	    rescue NoMethodError
+		begin
+		    @sketch_builder.send method, *args, &block
+		rescue NoMethodError
+		    begin
+			@parent.send(method, *args, &block)
+		    rescue
+			# The second half of the instance_eval delegation trick mentioned at
+			#   http://www.dan-manges.com/blog/ruby-dsls-instance-eval-with-delegation
+			@self_before_instance_eval.send method, *args, &block
+		    end
+		end
 	    end
 
 	    # Set the length attribute of the {Extrusion}
@@ -32,18 +56,6 @@ class Model
 	    # @param [Proc] block	A block that evaluates to the value of the parameter
 	    def let name, &block
 		@extrusion.define_parameter name, &block
-	    end
-
-	    # Forward all missing method calls to the extrusion and fall through
-	    #   to the {Sketch} builder. If that fails, try the parent.
-	    def method_missing(id, *args, &block)
-		@extrusion.send id, *args, &block
-	    rescue NoMethodError
-		begin
-		    @sketch_builder.send id, *args, &block
-		rescue NoMethodError
-		    @parent.send(id, *args, &block) if @parent
-		end
 	    end
 	end
     end

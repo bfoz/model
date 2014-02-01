@@ -21,6 +21,25 @@ class Model
 	    @model
 	end
 
+	# Try to redirect missing methods to the {Model} or fall thru to super
+	def method_missing(id, *args, &block)
+	    if @model.respond_to?(id)
+		@model.send id, *args, &block
+	    else
+		super if defined?(super)
+	    end
+	end
+
+	# !@attribute [r] elements
+	#   @return [Array] The current list of elements
+	def elements
+	    @model.elements
+	end
+
+# @group DSL support methods
+
+private
+
 	# Define an attribute with the given name and optional default value (or block)
 	# @param name [String]	The attribute's name
 	# @param value An optional default value
@@ -53,21 +72,6 @@ class Model
 	    @model.class.define_parameter name, &block
 	end
 
-	# Try to redirect missing methods to the {Model} or fall thru to super
-	def method_missing(id, *args, &block)
-	    if @model.respond_to?(id)
-		@model.send id, *args, &block
-	    else
-		super if defined?(super)
-	    end
-	end
-
-	# !@attribute [r] elements
-	#   @return [Array] The current list of elements
-	def elements
-	    @model.elements
-	end
-
 	# Adds all of the given elements to the {Model}
 	# @param [Array]    args The elements to add to the {Model}
 	# @return   The last element added to the {Model}
@@ -75,45 +79,26 @@ class Model
 	    @model.push(*args)
 	end
 
-	# Create a {Group} with an optional name and transformation
-	def group(*args, &block)
-	    push Model::Builder.new(Group.new(*args)).evaluate(&block)
-	end
-
-	# Create and add an {Extrusion} object with the given length and {Sketch}
-	# Optionally accepts the same options as {Geometry::Transformation Transformation}
-	# @param [Numeric]  length	The length of the {Extrusion}
-	# @param [Sketch]   sketch	The {Sketch} to extrude
-	# @param [Proc]	    block	A block to use for creating, or modifying, the {Sketch} to extrude
-	# @param [Hash]	    options	Any of the options accepted by {Geometry::Transformation}
-	# @return [Extrusion]   A new {Extrusion}
-	def extrude(options={}, &block)
-	    raise ArgumentError, "Arguments must be named" unless options.is_a?(Hash)
-	    raise ArgumentError, "Can't extrude without a length" unless options[:length]
-	    raise ArgumentError, "Can't extrude without a block or a sketch" unless block_given? or options[:sketch]
-
-	    length = options.delete(:length)
-	    sketch = options.delete(:sketch) { Sketch.new }
+	# Build a new {Extrusion}
+	# @param length [Number]    the length of the extrusion
+	# @param sketch [Sketch]    a {Sketch} to extrude (or nil)
+	# @param parent	[Object]    a parent context to use while building
+	# @param options [Hash]	    anything that needs to be passed to the new {Extrusion} instance
+	def build_extrusion(length, sketch, parent, options={}, &block)
+	    sketch ||= Sketch.new
 	    sketch = sketch.new unless sketch.is_a? Sketch
-
 	    extrusion = Extrusion.new(length: length, sketch:sketch, transformation:Geometry::Transformation.new(options))
 	    if block_given?
-		push Model::Extrusion::Builder.new(extrusion, self).evaluate(&block)
+		Model::Extrusion::Builder.new(extrusion, parent).evaluate(&block)
 	    else
-		push extrusion
+		extrusion
 	    end
 	end
 
-	# @group Ignorance is Bliss
-
-	# Common catcher for methods that are being ignored
-	def ignore(*args, &block)
+	# Build a new {Group}
+	def build_group(*args, &block)
+	    Model::Builder.new(Group.new(*args)).evaluate(&block)
 	end
-
-	# Shortcuts for preventing elements from generating geometry
-	alias :xgroup	:ignore
-	alias :xextrude	:ignore
-
-	# @endgroup
+# @endgroup
     end
 end

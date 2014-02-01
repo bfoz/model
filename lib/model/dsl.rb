@@ -34,11 +34,46 @@ class Model
 	    elements.last
 	end
 
+	# Create a {Group} with an optional name and transformation
+	def group(*args, &block)
+	    push build_group(*args, &block)
+	end
+
 	# @overload translate(origin, block)
 	#   Create a {Group} using the given translation
 	# @param [Point] origin	The distance by which to translate the enclosed geometry
 	def translate(*args, &block)
 	    group(origin:Point[*args], &block)
 	end
+
+	# Create and add an {Extrusion} object with the given length and {Sketch}
+	# Optionally accepts the same options as {Geometry::Transformation Transformation}
+	# @param [Numeric]  length	The length of the {Extrusion}
+	# @param [Sketch]   sketch	The {Sketch} to extrude
+	# @param [Proc]	    block	A block to use for creating, or modifying, the {Sketch} to extrude
+	# @param [Hash]	    options	Any of the options accepted by {Geometry::Transformation}
+	# @return [Extrusion]   A new {Extrusion}
+	def extrude(options={}, &block)
+	    raise ArgumentError, "Arguments must be named" unless options.is_a?(Hash)
+	    raise ArgumentError, "Can't extrude without a length" unless options[:length]
+	    raise ArgumentError, "Can't extrude without either a block or a sketch" unless block_given? or options[:sketch]
+
+	    length = options.delete(:length)
+	    sketch = options.delete(:sketch)
+
+	    push build_extrusion(length, sketch, self, options, &block)
+	end
+
+	# @group Ignorance is Bliss
+
+	# Common catcher for methods that are being ignored
+	def ignore(*args, &block)
+	end
+
+	# Shortcuts for preventing elements from generating geometry
+	alias :xgroup	:ignore
+	alias :xextrude	:ignore
+
+	# @endgroup
     end
 end

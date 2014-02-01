@@ -13,7 +13,7 @@ class Model
 	def initialize(options={})
 	    if options[:sketch]
 		@sketch = options[:sketch]
-		raise ArgumentError, "sketch must be a Sketch" unless @sketch.is_a?(Sketch)
+		raise ArgumentError, "sketch must be a Sketch, not #{@sketch}" unless @sketch.is_a?(Sketch)
 	    end
 	    @length = options[:length]
 

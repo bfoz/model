@@ -28,7 +28,8 @@ class Model
 
 	@elements = Array.new
 
-	self.transformation = options.delete(:transformation)
+	self.transformation = options.delete(:transformation) || Geometry::Transformation.new(options.select {|k,v| [:angle, :move, :origin, :rotate, :scale, :x, :y, :z].include? k })
+	options.reject! {|k,v| [:angle, :move, :origin, :rotate, :scale, :x, :y, :z].include? k }
 	options.each { |k,v| send("#{k}=", v) }
 
 	instance_eval &block if block_given?

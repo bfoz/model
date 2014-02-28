@@ -398,5 +398,10 @@ describe Model::Builder do
 	    builder.xgroup
 	    builder.model.elements.count.must_equal 0
 	end
+
+	it 'must ignore xtranslate' do
+	    builder.xtranslate
+	    builder.model.elements.count.must_equal 0
+	end
     end
 end

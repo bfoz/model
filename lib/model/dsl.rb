@@ -73,6 +73,7 @@ class Model
 	# Shortcuts for preventing elements from generating geometry
 	alias :xgroup	:ignore
 	alias :xextrude	:ignore
+	alias :xtranslate   :ignore
 
 	# @endgroup
     end

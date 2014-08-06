@@ -39,11 +39,20 @@ class Model
 	    push build_group(*args, &block)
 	end
 
-	# @overload translate(origin, block)
-	#   Create a {Group} using the given translation
-	# @param [Point] origin	The distance by which to translate the enclosed geometry
-	def translate(*args, &block)
-	    group(origin:Point[*args], &block)
+	# Create a {Group} using the given translation
+	# @overload translate(x, y, &block)
+	#   @param x [Number]	the x-component of the desired translation
+	#   @param y [Number]	the y-component of the desired translation
+	#   @param z [Number]	the z-component of the desired translation
+	# @overload translate(point, &block)
+	#   @param point [Point]	The distance by which to translate the enclosed geometry
+	# @overload translate(options, &block)
+	#   @option options :x [Number]	the x-component of the desired translation
+	#   @option options :y [Number]	the y-component of the desired translation
+	#   @option options :z [Number]	the z-component of the desired translation
+	def translate(x=nil, y=nil, z=nil, **options, &block)
+	    point = Point[x || options[:x] || 0, y || options[:y] || 0, z || options[:z] || 0]
+	    group(origin:point, &block)
 	end
 
 	# Create and add an {Extrusion} object with the given length and {Sketch}

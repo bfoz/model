@@ -1,6 +1,6 @@
 # Geometric Modeling With Ruby [![Build Status](https://travis-ci.org/bfoz/model.png)](https://travis-ci.org/bfoz/model)
 
-I need to think of something to type here.
+*Model* is a container for 3D [geometry](https://rubygems.org/gems/geometry) in the same way that a canvas is a container for 2D [geometry](https://rubygems.org/gems/geometry).
 
 License
 -------

@@ -76,7 +76,7 @@ private
 	# @param [Array]    args The elements to add to the {Model}
 	# @return   The last element added to the {Model}
 	def push(*args)
-	    @model.push(*args)
+	    elements.push(*args)
 	end
 
 	# Build a new {Extrusion}

@@ -16,4 +16,6 @@ Gem::Specification.new do |gem|
 
     gem.add_dependency	'geometry', '~> 6'
     gem.add_dependency	'sketch', '~> 0.1'
+
+    gem.required_ruby_version = '>= 2.0'
 end

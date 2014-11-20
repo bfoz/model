@@ -2,7 +2,7 @@
 
 Gem::Specification.new do |gem|
     gem.name          = "model"
-    gem.version       = '0.2'
+    gem.version       = '0.2.1'
     gem.authors       = ["Brandon Fosdick"]
     gem.email         = ["bfoz@bfoz.net"]
     gem.description   = %q{3D Solid Modeling}

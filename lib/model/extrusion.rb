@@ -37,5 +37,41 @@ class Model
 		raise ArgumentError, "The transformation must have at least 3 dimensions" if @transformation.dimensions && (@transformation.dimensions < 3)
 	    end
 	end
+
+# @group Accessors
+
+	# @attribute [r] max
+	# @return [Point]
+	def max
+	    minmax.last
+	end
+
+	# @attribute [r] min
+	# @return [Point]
+	def min
+	    minmax.first
+	end
+
+	# @attribute [r] minmax
+	# @return [Array<Point>]
+	def minmax
+	    return [nil, nil] unless sketch
+
+	    # Get the min and max of the sketch and then force them to be 2D points
+	    #  Some of the 2D elements will return a PointIso if their center is
+	    #  a PointZero. Normally that's not a problem, except that PointIso
+	    #  can be accidentally promoted to higher dimensions.
+	    _min, _max = sketch.minmax.map {|a| a.shift(2) }
+	    [transformation.transform(Point[*_min, 0]), transformation.transform(Point[*_max, length])]
+	end
+
+	# @attribute size
+	# @return [Size]	The size of the box that bounds the {Extrusion}
+	def size
+	    Geometry::Size[*(sketch.size), length]
+	end
+
+# @endgroup
+
     end
 end

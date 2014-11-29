@@ -18,6 +18,19 @@ describe Model do
 	end
     end
 
+    describe 'when the constructor is passed a block with non-zero arity' do
+	let(:model) do
+	    Model.new do |model|
+		model.push Model::Extrusion.new(length:5, sketch:Sketch.new)
+	    end
+	end
+
+	it 'should create a new Model and use it to evaluate the block' do
+	    model.must_be_instance_of(Model)
+	    model.elements.last.must_be_instance_of Model::Extrusion
+	end
+    end
+
     describe "when the constructor is not passed a block" do
 	before do
 	    @model = Model.new
@@ -30,7 +43,11 @@ describe Model do
     end
 
     describe "properties and methods" do
-	let(:model) { Model.new }
+	let(:model) do
+	    Model.new do
+		push Extrusion.new(length:5, sketch:Sketch.new.tap(){|sketch| sketch.push Geometry::Rectangle.new(center:[0,0], size:[10,10])})
+	    end
+	end
 
 	it "should have an elements accessor" do
 	    model.must_respond_to :elements
@@ -43,6 +60,22 @@ describe Model do
 	it "must have a push method that pushes elements" do
 	    model.push Model::Extrusion.new(length:5, sketch:Sketch.new)
 	    model.elements.last.must_be_kind_of Model::Extrusion
+	end
+
+	it 'must have a max property that returns the upper right point of the bounding rectangle' do
+	    model.max.must_equal Point[5.0,5.0,5]
+	end
+
+	it 'must have a min property that returns the lower left point of the bounding rectangle' do
+	    model.min.must_equal Point[-5.0,-5.0,0]
+	end
+
+	it 'must have a minmax property that returns the corners of the bounding rectangle' do
+	    model.minmax.must_equal [Point[-5.0,-5.0,0], Point[5.0,5.0,5.0]]
+	end
+
+	it 'must have a size' do
+	    model.size.must_equal Geometry::Size[10,10,5]
 	end
     end
 

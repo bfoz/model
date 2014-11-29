@@ -3,6 +3,7 @@ require 'sketch'
 require_relative 'model/builder'
 require_relative 'model/extrusion'
 require_relative 'model/group'
+require_relative 'model/layout'
 
 =begin
 A Model is a container for 3D Geometry objects
@@ -46,6 +47,52 @@ class Model
     #   @return [Element] The first element
     def first
 	elements.first
+    end
+
+    # @!attribute last
+    #   @return [Element]  The last element
+    def last
+	elements.last
+    end
+
+    # @attribute [r] max
+    # @return [Point]
+    def max
+	minmax.last
+    end
+
+    # @attribute [r] min
+    # @return [Point]
+    def min
+	minmax.first
+    end
+
+    # @attribute [r] minmax
+    # @return [Array<Point>]
+    def minmax
+	return [nil, nil] unless @elements.size != 0
+
+	memo = @elements.map {|e| e.minmax }.reduce {|memo, e| [memo.first.min(e.first), memo.last.max(e.last)] }
+	if self.transformation
+	    if self.transformation.has_rotation?
+		# If the transformation has a rotation, convert the minmax into a bounding box, rotate it, then find the new minmax
+		bottom = memo.first.shift(2).to_a.product(memo.last.shift(2).to_a).map {|(x,y)| Point[x, y, memo.first.z] }
+		top = memo.first.shift(2).to_a.product(memo.last.shift(2).to_a).map {|(x,y)| Point[x, y, memo.last.z] }
+		points = [*bottom, *top].map {|point| self.transformation.transform(point) }
+
+		points.reduce([points[0], points[0]]) {|memo, e| [memo.first.min(e), memo.last.max(e)] }
+	    else
+		memo.map {|point| self.transformation.transform(point) }
+	    end
+	else
+	    memo
+	end
+    end
+
+    # @attribute [r] size
+    # @return [Size]	The size of the {Rectangle} that bounds all of the {Sketch}'s elements
+    def size
+	Geometry::Size[self.minmax.reverse.reduce(:-).to_a]
     end
 
 # @endgroup

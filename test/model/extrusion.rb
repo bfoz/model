@@ -31,8 +31,28 @@ describe Model::Extrusion do
     end
 
     describe "properties" do
+	let(:model) do
+	    Extrusion.new(length:5, sketch:Sketch.new.tap(){|sketch| sketch.push Geometry::Rectangle.new(center:[0,0], size:[10,10])})
+	end
+
 	it "must have a transformation setter" do
 	    Extrusion.new.transformation = Geometry::Transformation.new
+	end
+
+	it 'must have a max property that returns the upper-right-back corner of the bounding box' do
+	    model.max.must_equal Point[5.0,5.0,5.0]
+	end
+
+	it 'must have a min property that returns the lower-left-front corner of the bounding box' do
+	    model.min.must_equal Point[-5.0,-5.0,0.0]
+	end
+
+	it 'must have a minmax property that returns the corners of the bounding rectangle' do
+	    model.minmax.must_equal [Point[-5.0,-5.0,0.0], Point[5.0,5.0,5.0]]
+	end
+
+	it 'must have a size' do
+	    model.size.must_equal Geometry::Size[10,10,5]
 	end
     end
 

@@ -1,6 +1,7 @@
 class Model
     # Syntactic sugar for building {Model} geometry
-    # The including Class or Module is required to implement suitable push and elements methods.
+    # The including Class or Module is required to implement suitable 'push' and
+    #  'elements' methods.
     module DSL
 	# @return [Element] The first element
 	def first
@@ -51,6 +52,12 @@ class Model
 	    push build_extrusion(length, sketch, self, options, &block)
 	end
 
+	# Stack all of the children on top of each other (along the Z-axis)
+	def stack(*args, **options, &block)
+	    options[:direction] = :vertical
+	    push build_layout(*args, **options, &block)
+	end
+
 	# @group Ignorance is Bliss
 
 	# Common catcher for methods that are being ignored
@@ -60,6 +67,7 @@ class Model
 	# Shortcuts for preventing elements from generating geometry
 	alias :xgroup	:ignore
 	alias :xextrude	:ignore
+	alias :xstack	    :ignore
 	alias :xtranslate   :ignore
 
 	# @endgroup

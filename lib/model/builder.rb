@@ -1,5 +1,6 @@
 require_relative 'dsl'
 require_relative 'extrusion/builder'
+require_relative 'layout'
 
 class Model
     class Builder
@@ -62,6 +63,11 @@ private
 	# Build a new {Group}
 	def build_group(*args, &block)
 	    Model::Builder.new(Group.new(*args)).evaluate(&block)
+	end
+
+	# Build a new {Layout}
+	def build_layout(*args, **options, &block)
+	    Model::Builder.new(Layout.new(*args, **options)).evaluate(&block)
 	end
 # @endgroup
     end

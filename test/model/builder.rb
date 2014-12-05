@@ -332,6 +332,11 @@ describe Model::Builder do
 	    builder.model.elements.count.must_equal 0
 	end
 
+	it 'must ignore xstack' do
+	    builder.xstack
+	    builder.model.empty?.must_equal true
+	end
+
 	it 'must ignore xtranslate' do
 	    builder.xtranslate
 	    builder.model.elements.count.must_equal 0
